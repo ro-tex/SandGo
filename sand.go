@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"reflect"
+	"time"
 
 	"github.com/SandGo/pack"
 )
@@ -132,6 +134,86 @@ func maps() {
 	}
 }
 
+func concurrency() {
+	ch := make(chan interface{}) // define a channel that takes any kind of message
+
+	go func() { // spin off a lambda into a separate goroutine
+		ch <- struct { // send a custom struct to the channel
+			x int
+			s string
+		}{2, "hello"}
+	}() // end of lambda/goroutine
+
+	// timeout := time.After(1 * time.Second) // returns a channel of type time.Time
+	// _ = <-timeout                          // an implicit "sleep" because "<-" blocks
+
+	fmt.Println(<-ch) // read from the channel and print the message out
+
+	chBool := make(chan bool, 2) // add a buffer of two messages
+
+	fmt.Println("Working...")
+
+	go func() { chBool <- true }()
+	go func() {
+		_ = <-time.After(1 * time.Second) // do some "work"
+		chBool <- true                    // all done
+	}()
+
+	if <-chBool && <-chBool { // wait for all goroutines to finish
+		fmt.Println("Done")
+	}
+}
+
+/*
+	Channels aren't like files; you don't usually need to close them. Closing
+	is only necessary when the receiver must be told there are no more values
+	coming, such as to terminate a range loop.
+*/
+func producersAndConsumers() {
+
+	// This is a producer thread that fills the pipeline
+	producer := func(p chan int) {
+		for i := 0; i < 5; i++ {
+			time.Sleep(500 * time.Millisecond)
+			p <- rand.Intn(100)
+		}
+		close(p) // no more production is coming
+	}
+
+	pipeline := make(chan int)
+	go producer(pipeline)
+
+	// This range will read from the channel until it's closed
+	for p := range pipeline {
+		fmt.Println(p)
+	}
+	fmt.Println("Done.\n----------------------------")
+
+	nums := make(chan int)
+	stop := make(chan bool)
+	go func() { producer(nums) }()
+	go func() {
+		time.Sleep(2 * time.Second)
+		stop <- true // send a command on the stop channel
+	}()
+
+	for {
+		// This select will read a message from one of the channels and act accordingly.
+		// Blocks until one of the cases can run (i.e. there's a message).
+		// If there are multiple messages, it chooses one at random.
+		select {
+		case n := <-nums:
+			fmt.Println(n)
+		case <-stop:
+			fmt.Printf("\nWe're done.\n")
+			return
+		default: // doesn't block
+			fmt.Println("            waiting for data...")
+			time.Sleep(300 * time.Millisecond)
+		}
+	}
+}
+
 func main() {
 	// hello()
 
@@ -145,6 +227,12 @@ func main() {
 
 	// arrays()
 
-	maps()
+	// maps()
+
+	// calling an anon func:
+	// func(s string) { fmt.Printf("Printing from a lambda: %s", s) }("heya")
+
+	// concurrency()
+	// producersAndConsumers()
 
 }
