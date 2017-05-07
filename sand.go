@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 
 	"./pack"
@@ -110,23 +111,23 @@ func Pic(dx, dy int) [][]uint8 {
 
 func maps() {
 	m := make(map[string]string) // init an empty map
-	p := map[int]string{         // init a const map
-		1024 ^ 1:  "K",
-		1024 * *2: "M",
-		1024 ^ 3:  "G",
+	p := map[float64]string{     // init a const map
+		math.Pow(1024, 1): "K",
+		math.Pow(1024, 2): "M",
+		math.Pow(1024, 3): "G",
 	}
 	m["hello"] = "world"
 	m["del"] = "me"
 	delete(m, "del") // delete(map, key)
 	fmt.Println(m, p)
 
-	for i := 1; i < 5000; i *= 1024 {
+	for i := 1.0; i < 5000; i *= 1024 {
 		e, present := p[i]
 		fmt.Println(present)
 		if present {
-			fmt.Printf("%d is present: %v\n", i, e)
+			fmt.Printf("%.0f is present: %v\n", i, e)
 		} else {
-			fmt.Printf("%d is NOT present\n", i)
+			fmt.Printf("%.0f is NOT present\n", i)
 		}
 	}
 }
