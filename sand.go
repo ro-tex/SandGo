@@ -5,7 +5,7 @@ import (
 	"math"
 	"reflect"
 
-	"./pack"
+	"github.com/SandGo/pack"
 )
 
 func hello() {
