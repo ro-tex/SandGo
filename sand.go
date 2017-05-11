@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"fmt"
 	"math"
 	"math/rand"
@@ -45,19 +47,18 @@ func pointers() {
 	fmt.Println(f)
 }
 
+type Vertex struct {
+	X int
+	Y int
+}
+
 func structs() {
-
-	type Vertex struct {
-		x int
-		y int
-	}
-
 	var point Vertex = Vertex{3, 4}
 	fmt.Printf("%T -> %+v\n", point, point) // %+v prints the field names, too!
 
 	p := &point
 	// both ways to access the struct through a pointer are permitted:
-	fmt.Println((*p).x, p.y)
+	fmt.Println((*p).X, p.Y)
 }
 
 func arrays() {
@@ -214,6 +215,66 @@ func producersAndConsumers() {
 	}
 }
 
+func functionsCanBeTypes() {
+	type Formatter func(text *string)
+	var f Formatter = func(t *string) { *t = fmt.Sprintf(">>>%s<<<", *t) }
+	s := "hi"
+	f(&s)                       // mutates s
+	fmt.Printf("%T %s\n", f, s) // “main.Formatter >>>hi<<<”
+
+	arr := []interface{}{1, "a", 3.14, 0, 0}
+	fmt.Println(arr...) // array unpacking
+}
+
+// DeferredPrinter demonstrates that 'defer' uses a stack (LIFO)
+func DeferredPrinter() {
+	defer fmt.Println(1)
+	defer fmt.Println(2)
+	defer fmt.Println(3)
+	defer fmt.Println(4)
+}
+
+func breakOnLabel() {
+FOR:
+	for c := 0; c < 100; c++ {
+		fmt.Println(c)
+		switch {
+		case c >= 10:
+			break FOR
+		default:
+			// do work
+		}
+	}
+}
+
+func gobber() {
+
+	type speck struct {
+		X int // matches Vertex.X
+		Y int // matches Vertex.Y
+		S int // doesn't match - will be empty
+	}
+
+	var buffer bytes.Buffer        // can be network
+	enc := gob.NewEncoder(&buffer) // will encode and send a Vertex
+	dec := gob.NewDecoder(&buffer) // wil receive and decode a Speck
+
+	err := enc.Encode(Vertex{1, 2})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// This will match Vertex even with the different name
+	// because the exported values are the same
+	var s speck
+
+	err = dec.Decode(&s)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Speck:", s)
+}
+
 func main() {
 	// hello()
 
@@ -234,5 +295,17 @@ func main() {
 
 	// concurrency()
 	// producersAndConsumers()
+
+	// functionsCanBeTypes()
+
+	// var e error = fmt.Errorf("Hey, I'm an error!")
+
+	// DeferredPrinter()
+
+	// breakOnLabel()
+
+	gobber() // packaging and unpackaging data
+
+	fmt.Printf("\n")
 
 }
