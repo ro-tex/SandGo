@@ -275,7 +275,18 @@ func gobber() {
 	fmt.Println("Speck:", s)
 }
 
+func fn(m *map[int]int) {
+	*m = make(map[int]int)
+	(*m)[3] = 4
+}
+func fnmain() {
+	var m map[int]int
+	fn(&m)
+	fmt.Println(m)
+}
+
 func main() {
+
 	// hello()
 
 	// typesAndReturns()
@@ -304,8 +315,9 @@ func main() {
 
 	// breakOnLabel()
 
-	gobber() // packaging and unpackaging data
+	// gobber() // packaging and unpackaging data
 
-	fmt.Printf("\n")
+	// fnmain() // passing maps by reference (explicitly)
 
+	fmt.Println()
 }
