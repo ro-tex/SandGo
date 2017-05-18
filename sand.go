@@ -4,12 +4,17 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"io"
 	"math"
 	"math/rand"
+	"os"
 	"reflect"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/SandGo/pack"
+	"github.com/pkg/errors"
 )
 
 func hello() {
@@ -45,11 +50,103 @@ func pointers() {
 
 	*p = 2.26 // dereferencing or indirecting
 	fmt.Println(f)
+
+	n := 42
+	pn := &n
+	ppn := &pn
+	fmt.Printf("var(n): %d, pointer to var(*pn): %d, pointer to pointer to var(**ppn): %d\n", n, *pn, **ppn)
+
+	v := Vertex{2, 3}
+
+	fmt.Println(v)
+	v.Rotate()
+	fmt.Println(v)
+
+	fmt.Println("Objects:")
+
+	var o interface{}
+	fmt.Println(o) // nil
+	o = v
+	fmt.Println(o) // {4, 2}
+	o = &v
+	fmt.Println(o) // &{4, 2}
+
+	vvv, err := o.(Vertex) // this is basically o.typeof(vertex)
+
+	if !err {
+		fmt.Println("It's a vertex:", vvv)
+	} else {
+		fmt.Println("Not a vertex")
+	}
 }
 
 type Vertex struct {
-	X int
-	Y int
+	X int `json:"a"` // needs to be public in order to be exported, as in "X int"
+	Y int `json:"b"`
+}
+
+// Implement the Stringer interface
+func (v Vertex) String() string {
+	return fmt.Sprintf("{X: %d, Y: %d}", v.X, v.Y)
+}
+
+/*
+	So this is basically what an object method looks like in Go. You can only define methods on types defined
+	in the current package (so no built-in types).
+
+	The v that we pass in the method signature defines how we see 'this' in the scope of the method - it's
+	up to us to name it.
+*/
+func (v Vertex) Quadrant() int {
+	switch {
+	case v.X >= 0 && v.Y >= 0:
+		return 1
+	case v.X < 0 && v.Y >= 0:
+		return 2
+	case v.X < 0 && v.Y < 0:
+		return 3
+	default:
+		return 4
+	}
+}
+
+// Mutator: This one takes a pointer to an object, so it can modify it.
+func (v *Vertex) Rotate() {
+	v.X, v.Y = v.Y, v.X
+}
+
+// ### DEFINING ERRORS START ###
+type SimpleFloatError float64
+
+func (e SimpleFloatError) Error() string {
+	return fmt.Sprintf("negative input: %f", float64(e))
+}
+
+type FloatErrorWithMessage struct {
+	val float64
+	msg string
+}
+
+func (e FloatErrorWithMessage) Error() string {
+	return fmt.Sprintf("%s value: %f", e.msg, e.val)
+}
+
+func TestError(val float64) (float64, error) {
+	// return 0, errors.New(fmt.Sprintf("bad input: %f", val)) // the built-in way
+	//return 0, SimpleFloatError(val) // simple custom error
+	return 0, FloatErrorWithMessage{val, "Can't work with this!"} // more functional custom error
+}
+
+// ### DEFINING ERRORS END ###
+
+// returns an added function that is a closure
+func adder(base int) func(int) int {
+	sum := base
+
+	return func(x int) int {
+		sum := sum + x
+		return sum
+	}
 }
 
 func structs() {
@@ -99,10 +196,65 @@ func arrays() {
 	fmt.Println(s)
 }
 
+func interfaces(v Vertex) {
+	var s fmt.Stringer
+
+	s = &v
+
+	stringer, ok := s.(error)
+	if !ok {
+		fmt.Printf("It can be a string! Value: %v, Type: %T, ok: %v\n", stringer, stringer, ok)
+	} else {
+		fmt.Printf("It CANNOT be a string! Value: %v, Type: %T, ok: %v\n", stringer, stringer, ok)
+	}
+
+	a := []interface{}{"1", "2", "3", 7}
+	a = append([]interface{}{"dump"}, a...)
+	fmt.Println(a...)
+}
+
+func typeSwitch(o interface{}) {
+	// A type switch enables us to react to several possible incoming parameter types in a single structure.
+	switch obj := o.(type) { // type is the keyword
+	case int:
+		fmt.Println("int", obj)
+	case Vertex:
+		fmt.Println("It's a vertex!", obj)
+	default:
+		fmt.Printf("We cannot process this thing! Type: %T\n", obj)
+	}
+}
+
+// This is a function that gets any number of arguments of a given type. In this case - any type.
+func variadic(args ...interface{}) {
+	for _, v := range args {
+		fmt.Print(v, " | ")
+	}
+}
+
+func readers() {
+	var stream string = "Hello, this is a stream of data to be read."
+	r := strings.NewReader(stream)
+	b := make([]byte, 8) // we'll read into this buffer
+
+	for {
+		n, err := r.Read(b) // n is number of bytes read
+
+		/*
+			What is VERY important here is the [:n] slicing when we are reading the buffer.
+			The problem is that when the last chunk is read there will be garbage at the end of the buffer
+			and we want to filter out that garbage by taking just the number of bytes we just read.
+		*/
+		fmt.Printf("n = %v err = %v b = %v s = %s\n", n, err, b[:n], string(b[:n]))
+
+		if err == io.EOF {
+			break
+		}
+	}
+}
+
 func Pic(dx, dy int) [][]uint8 {
-
 	var result [][]uint8 = make([][]uint8, dx, dx)
-
 	for i := 0; i < dx; i++ {
 		result[i] = make([]uint8, dy, dy)
 		for j := 0; j < dy; j++ {
@@ -285,6 +437,37 @@ func fnmain() {
 	fmt.Println(m)
 }
 
+func writeToFile(text string, fileName string) {
+	f, e := os.Create(fileName)
+
+	if e != nil {
+		fmt.Println(e)
+		return
+	}
+	f.Write([]byte(text))
+}
+
+// https://golang.org/pkg/runtime/#Caller
+func getCallerFileAndLine() {
+	// Caller param - how many levels of the stack trace to skip
+	programCounter, fileName, lineNumber, ok := runtime.Caller(1)
+
+	fmt.Printf("%+v %+v %+v %+v ", programCounter, fileName[strings.LastIndex(fileName, "/")+1:], lineNumber, ok)
+	return
+}
+
+func doWork() error {
+	return errors.New("Error while doing work: (descr)")
+}
+
+func organiseWork() error {
+	err := doWork()
+	if err != nil {
+		return errors.WithMessage(err, "org msg")
+	}
+	return nil
+}
+
 func main() {
 
 	// hello()
@@ -293,7 +476,7 @@ func main() {
 
 	// packages()
 
-	// pointers()
+	pointers()
 
 	// structs()
 
@@ -318,6 +501,10 @@ func main() {
 	// gobber() // packaging and unpackaging data
 
 	// fnmain() // passing maps by reference (explicitly)
+
+	// writeToFile("hello", "hello.txt")
+
+	// getCallerFileAndLine()
 
 	fmt.Println()
 }
