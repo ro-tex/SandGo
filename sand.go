@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/SandGo/pack"
-	"github.com/pkg/errors"
 )
 
 func hello() {
@@ -518,22 +517,6 @@ func main() {
 	// writeToFile("hello", "hello.txt")
 
 	// getCallerFileAndLine()
-
-	// Binary tree initialisation:
-	// t := tree{0, &tree{1, nil, &tree{3, nil, nil}}, nil}
-	// fmt.Println(t.find(2))
-
-	// a := make(chan int)
-	// go func() {
-	// 	for i := 0; i < 3; i++ {
-	// 		a <- i
-	// 	}
-	// 	close(a)
-	// }()
-	//
-	// for i := 0; i < 10; i++ {
-	// 	fmt.Println(<-a)
-	// }
 
 	fmt.Println()
 }
