@@ -455,18 +455,6 @@ func getCallerFileAndLine() {
 	return
 }
 
-func doWork() error {
-	return errors.New("Error while doing work: (descr)")
-}
-
-func organiseWork() error {
-	err := doWork()
-	if err != nil {
-		return errors.WithMessage(err, "org msg")
-	}
-	return nil
-}
-
 type tree struct {
 	v int
 	l *tree
