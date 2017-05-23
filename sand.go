@@ -468,6 +468,19 @@ func organiseWork() error {
 	return nil
 }
 
+type tree struct {
+	v int
+	l *tree
+	r *tree
+}
+
+func (t *tree) find(x int) bool {
+	if t == nil {
+		return false
+	}
+	return t.v == x || t.l.find(x) || t.r.find(x)
+}
+
 func main() {
 
 	// hello()
@@ -476,7 +489,7 @@ func main() {
 
 	// packages()
 
-	pointers()
+	// pointers()
 
 	// structs()
 
@@ -505,6 +518,22 @@ func main() {
 	// writeToFile("hello", "hello.txt")
 
 	// getCallerFileAndLine()
+
+	// Binary tree initialisation:
+	// t := tree{0, &tree{1, nil, &tree{3, nil, nil}}, nil}
+	// fmt.Println(t.find(2))
+
+	// a := make(chan int)
+	// go func() {
+	// 	for i := 0; i < 3; i++ {
+	// 		a <- i
+	// 	}
+	// 	close(a)
+	// }()
+	//
+	// for i := 0; i < 10; i++ {
+	// 	fmt.Println(<-a)
+	// }
 
 	fmt.Println()
 }

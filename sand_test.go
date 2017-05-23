@@ -1,10 +1,14 @@
 package main
 
-import "testing"
+import (
+	"runtime"
+	"testing"
+)
 
 func Test_VertexString(t *testing.T) {
 
-	t.Parallel() // this test is safe for parallel execution with other tests
+	// This test is safe for parallel execution with other tests:
+	t.Parallel()
 
 	var tests = []struct {
 		v        Vertex
@@ -20,4 +24,14 @@ func Test_VertexString(t *testing.T) {
 			t.Errorf("Expected '%s', got '%s'", test.expected, actual)
 		}
 	}
+}
+
+func Test_Windows(t *testing.T) {
+
+	// We can skip this test in certain conditions (logs "Skipped"):
+	if runtime.GOOS != "windows" {
+		t.Skip("We need Windows for this test.")
+	}
+
+	// Test Windows-dependent functionality...
 }
