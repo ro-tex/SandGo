@@ -72,8 +72,9 @@ func chanReadFromClosed() {
 }
 
 func chanOperations() {
-	// This cahnnel will deliver the operation to be performed on the payload "s"
-	chOps := make(chan func(string) int)
+	// Functions are first class citizens, so they can be passed via channels.
+	// This cahnnel will deliver the operation to be performed on the payload "s":
+	chOps := make(chan func(string) int, 10)
 
 	s := "asdf"
 
@@ -97,7 +98,8 @@ func chanWorkerPool() {
 		DataField string
 	}
 
-	chWork := make(chan payload)
+	// always buffer your channels unless you need to use them for synchro
+	chWork := make(chan payload, 10)
 
 	// spawning 5 workers
 	for i := 0; i < 5; i++ {
