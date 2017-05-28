@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 	"time"
 )
 
-func channelsSelect() {
+func chanSelect() {
 	c1 := make(chan bool)
 	c2 := make(chan bool)
 
@@ -51,6 +53,70 @@ func chanDetectClosed() {
 			return
 		}
 	}
+}
+
+// We can read from a closed channel and get the values stored there, as long as it's buffered.
+// If it's not or if we run out of values we'll get the default channel value.
+func chanReadFromClosed() {
+	ch := make(chan int, 2)
+	ch <- 1
+	ch <- 2
+	close(ch)
+
+	n, ok := <-ch
+	fmt.Println(n, ok)
+	n, ok = <-ch
+	fmt.Println(n, ok)
+	n, ok = <-ch
+	fmt.Println(n, ok)
+}
+
+func chanOperations() {
+	// This cahnnel will deliver the operation to be performed on the payload "s"
+	chOps := make(chan func(string) int)
+
+	s := "asdf"
+
+	go func() {
+		for f := range chOps {
+			fmt.Println(f(s))
+		}
+	}()
+
+	chOps <- func(str string) int {
+		return len(str)
+	}
+
+	chOps <- func(str string) int {
+		return 2600 // something...
+	}
+}
+
+func chanWorkerPool() {
+	type payload struct {
+		DataField string
+	}
+
+	chWork := make(chan payload)
+
+	// spawning 5 workers
+	for i := 0; i < 5; i++ {
+		go func(workerID int) {
+			for work := range chWork {
+				time.Sleep(10 * time.Millisecond) // doing work
+				log.Println("Payload processed by worker #" + strconv.Itoa(workerID) + "\t" + work.DataField)
+			}
+		}(i)
+	}
+	log.Println("workers are now running")
+
+	// send 10 units of work
+	for i := 0; i < 10; i++ {
+		chWork <- payload{"work unit #" + strconv.Itoa(i)}
+	}
+	log.Println("closing channel - no more work")
+	close(chWork)
+	log.Println("done.")
 }
 
 func main() {
