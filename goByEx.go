@@ -115,6 +115,9 @@ func chanWorkerPool() {
 		chWork <- payload{"work unit #" + strconv.Itoa(i)}
 	}
 	log.Println("closing channel - no more work")
+	// A key point here is that when we close the channel that will terminate the range operations in the workers
+	// and they will terminate. Thus, even if the function goes on to do something else that memory will be freed.
+	// TL;DR: Close your channels when you're done with them!
 	close(chWork)
 	log.Println("done.")
 }
