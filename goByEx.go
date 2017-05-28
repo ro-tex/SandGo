@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -122,6 +123,36 @@ func chanWorkerPool() {
 	// TL;DR: Close your channels when you're done with them!
 	close(chWork)
 	log.Println("done.")
+}
+
+type kid struct {
+	name string
+	age  int
+}
+
+// set is a mutator, so it takes a pointer
+func (k *kid) set(name string, age int) {
+	k.name = name
+	k.age = age
+}
+
+type kids []kid
+
+// Implement the sort interface:
+func (k kids) Len() int {
+	return len(k)
+}
+func (k kids) Less(i, j int) bool {
+	return k[i].age < k[j].age
+}
+func (k kids) Swap(i, j int) {
+	k[i], k[j] = k[j], k[i]
+}
+
+func sortingCustom() {
+	group := kids{kid{"derek", 5}, kid{"jessica", 4}, kid{"mel", 3}, kid{"pete", 4}}
+	sort.Sort(group)
+	fmt.Println(group)
 }
 
 func main() {
