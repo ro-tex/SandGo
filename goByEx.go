@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
+	"os"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -200,6 +204,37 @@ func timePlay() {
 	p(t)
 }
 
+// math/rand - pseudorandom, deterministic
+// crypto/rand - safer?
+func random() {
+	// the engine is deterministic, so it will produce the same number sequence every time.
+	// so we need to seed it somehow in order to get a different sequence
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	p(r.Float64())
+	p(r.Float64())
+	p(r.Float64())
+
+	p(r.Intn(100))
+}
+
+func lineFilter() {
+	scanner := bufio.NewScanner(os.Stdin)
+	// printer := bufio.NewWriter(os.Stdout)
+
+	for scanner.Scan() {
+		s := scanner.Text()
+		// printer.Write([]byte(strings.ToUpper(s)))
+		// printer.Flush()
+		fmt.Fprint(os.Stdout, strings.ToUpper(s))
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
+}
+
 func main() {
-	timePlay()
+	lineFilter()
 }
