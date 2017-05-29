@@ -1,12 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"sort"
 	"strconv"
 	"time"
 )
+
+func p(x interface{}) (n int, err error) {
+	return fmt.Println(x)
+}
 
 func chanSelect() {
 	c1 := make(chan bool)
@@ -126,14 +131,20 @@ func chanWorkerPool() {
 }
 
 type kid struct {
-	name string
-	age  int
+	Name string `json:"name"`
+	Age  int    `json:"age"`
 }
 
 // set is a mutator, so it takes a pointer
 func (k *kid) set(name string, age int) {
-	k.name = name
-	k.age = age
+	k.Name = name
+	k.Age = age
+}
+
+// not a mutator - doesn't need a pointer
+// NOTE: it's good style to have all pointers or all non-pointers!
+func (k kid) getAge() int {
+	return k.Age
 }
 
 type kids []kid
@@ -143,7 +154,7 @@ func (k kids) Len() int {
 	return len(k)
 }
 func (k kids) Less(i, j int) bool {
-	return k[i].age < k[j].age
+	return k[i].getAge() < k[j].getAge()
 }
 func (k kids) Swap(i, j int) {
 	k[i], k[j] = k[j], k[i]
@@ -155,6 +166,40 @@ func sortingCustom() {
 	fmt.Println(group)
 }
 
-func main() {
+func jsons() {
+	b := []byte(`{"a":123,"b":"asdf","c":["c1","c2"],"d":{"d1":1,"d2":"dibi"}}`)
+	var j map[string]interface{} // this container can take any JSON
 
+	if err := json.Unmarshal(b, &j); err != nil {
+		panic(err)
+	}
+	// in order to use the parsed JSON value we need to cast it.
+	// including if we want to use the indexing function of the map.
+	// the good news is that we can cast in-line. clumsy but works.
+	fmt.Println(j["d"].(map[string]interface{})["d2"].(string))
+
+	// we'll unmarshall a specific type - 'kid'
+	joeBytes := []byte(`{"name":"Joe","age":13,"extra":"won't be unmarshalled"}`)
+	var joe kid
+	if err := json.Unmarshal(joeBytes, &joe); err != nil {
+		panic(err)
+	}
+	fmt.Println(joe) // the "extra" won't be there
+	// accessing fields and calling methods
+	// no need to type-cast!
+	fmt.Printf("Name: %s, Age: %d", joe.Name, joe.getAge())
+}
+
+func timePlay() {
+	p(time.Now().Format(time.RFC3339))
+
+	t, err := time.Parse(time.RFC3339, "2017-05-29T16:31:33+02:00")
+	if err != nil {
+		panic(err)
+	}
+	p(t)
+}
+
+func main() {
+	timePlay()
 }
