@@ -235,6 +235,31 @@ func lineFilter() {
 	}
 }
 
+// This function produces a "concurrent map read and map write" fatal error.
+func mapTest() {
+	m := make(map[int]int)
+
+	// writer
+	go func() {
+		for {
+			n := rand.Intn(10)
+			m[n] = 1
+		}
+	}()
+
+	// reader
+	go func() {
+		for {
+			n := rand.Intn(10)
+			_ = m[n]
+		}
+	}()
+
+	time.Sleep(time.Second)
+	fmt.Println("Hmm, didn't cause a fatal. I did not expect that.")
+	os.Exit(0) // we want to ensure that we've exited the program, so all goroutines will be killed.
+}
+
 func main() {
-	lineFilter()
+	mapTest()
 }
