@@ -260,6 +260,5 @@ func mapTest() {
 	os.Exit(0) // we want to ensure that we've exited the program, so all goroutines will be killed.
 }
 
-func main() {
-	mapTest()
-}
+// func main() {
+// }
