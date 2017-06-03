@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SandGo/pack"
+	"github.com/ro-tex/SandGo/pack"
 )
 
 func hello() {
@@ -468,7 +468,40 @@ func (t *tree) find(x int) bool {
 	return t.v == x || t.l.find(x) || t.r.find(x)
 }
 
+func EquableTriangle(a, b, c int) bool {
+	p := float64(a + b + c)
+	return p == math.Sqrt(p*(p-float64(2*a))*(p-float64(2*b))*(p-float64(2*c)))/4
+}
+
+func Accum(s string) string {
+	segments := make([]string, len(s))
+	for i := 0; i < len(s); i++ {
+		segments[i] = strings.ToUpper(string(s[i])) + strings.Repeat(string(s[i]), i)
+	}
+	return strings.Join(segments, "-")
+}
+
+func ToNato(words string) string {
+	nato := []string{"Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu"}
+	words = strings.ToUpper(strings.Replace(words, " ", "", -1))
+	out := make([]string, 0, len(words))
+	idxA, idxZ := int('A'), int('Z')
+	for i := 0; i < len(words); i++ {
+		if idxA <= int(words[i]) && int(words[i]) <= idxZ {
+			idx := int(words[i]) - idxA
+			out = append(out, nato[idx])
+		} else if string(words[i]) == " " {
+			continue
+		} else {
+			out = append(out, string(words[i]))
+		}
+	}
+	return strings.Join(out, " ")
+}
+
 func main() {
+
+	p := fmt.Println
 
 	// hello()
 
@@ -506,5 +539,5 @@ func main() {
 
 	// getCallerFileAndLine()
 
-	fmt.Println()
+	p()
 }
