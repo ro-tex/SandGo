@@ -12,7 +12,7 @@ func TestHello(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual := hello()
+		actual := Hello()
 		if actual != test.expected {
 			t.Errorf("Failed! Expected %s, got %s.", test.expected, actual)
 		}

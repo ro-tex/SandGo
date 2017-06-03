@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ro-tex/SandGo/pack"
+	"github.com/ro-tex/SandGo/hello"
 )
 
-func hello() {
+func helloWorld() {
 	fmt.Print(">>> ")
 	fmt.Printf("Hello, %s!\n", "世界") // string formatting
 }
@@ -38,8 +38,8 @@ func typesAndReturns() {
 }
 
 func packages() {
-	// import a local package: import "./pack"
-	fmt.Println(pack.Expo())
+	// import and use a local package:
+	fmt.Println(hello.Hello())
 }
 
 func pointers() {
@@ -503,7 +503,7 @@ func main() {
 
 	p := fmt.Println
 
-	// hello()
+	// helloWorld()
 
 	// typesAndReturns()
 
