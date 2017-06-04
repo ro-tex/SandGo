@@ -9,18 +9,19 @@ type Three int
 type NumOne interface {
 	IsANum()
 }
+
+func (n One) IsANum() {}
+
 type NumTwo interface {
 	IsANumTwo()
 }
+
+func (n Two) IsANumTwo() {}
 
 type NumThree interface {
 	IsANum()
 	IsANumTwo()
 }
-
-func (n One) IsANum() {}
-
-func (n Two) IsANumTwo() {}
 
 func (n Three) IsANum()    {}
 func (n Three) IsANumTwo() {}
