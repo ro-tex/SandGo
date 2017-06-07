@@ -499,6 +499,38 @@ func ToNato(words string) string {
 	return strings.Join(out, " ")
 }
 
+// ProductFib solves https://www.codewars.com/kata/5541f58a944b85ce6d00006a/train/go
+func ProductFib(prod uint64) [3]uint64 {
+	fib := getFibonacciFunc()
+	for i := uint64(0); ; i++ {
+		f1, f2 := fib(i), fib(i+1)
+		if f1*f2 == prod {
+			return [3]uint64{f1, f2, 1}
+		} else if f1*f2 > prod {
+			return [3]uint64{f1, f2, 0}
+		}
+	}
+}
+
+// Returns a function that returns the Fibonacci numbers while utilising dynamic programming
+// in order to optimise calculation. We use a closure in order to make the fibs slice permanent.
+func getFibonacciFunc() func(uint64) uint64 {
+	// we'll cache all Fibonacci numbers we calculate in memory:
+	fibs := []uint64{0, 1, 1}
+
+	return func(n uint64) uint64 {
+		if n >= uint64(len(fibs)) {
+			// we don't have that number calculated - we'll now calculate all
+			// Fibonacci numbers leading up to (and incl.) the number:
+			for i := uint64(len(fibs)); i <= n; i++ {
+				fibs = append(fibs, fibs[i-2]+fibs[i-1])
+			}
+		}
+		// we have that already calculated - we'll just return it:
+		return fibs[n]
+	}
+}
+
 func main() {
 
 	p := fmt.Println
@@ -538,6 +570,9 @@ func main() {
 	// writeToFile("hello", "hello.txt")
 
 	// getCallerFileAndLine()
+
+	// f := getFibonacciFunc()
+	// p(f(3), f(5), f(9))
 
 	p()
 }
