@@ -439,6 +439,10 @@ func fnmain() {
 func writeToFile(text string, fileName string) {
 	f, e := os.Create(fileName)
 
+	// The file handle will be closed when we exit this function.
+	// This is a good approach, so we don't forget to do it.
+	defer f.Close()
+
 	if e != nil {
 		fmt.Println(e)
 		return
