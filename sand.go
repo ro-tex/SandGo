@@ -64,15 +64,16 @@ func pointers() {
 	fmt.Println("Objects:")
 
 	var o interface{}
-	fmt.Println(o) // nil
+	fmt.Println(o) // <nil>
 	o = v
 	fmt.Println(o) // {4, 2}
 	o = &v
 	fmt.Println(o) // &{4, 2}
 
-	vvv, err := o.(Vertex) // this is basically o.typeof(vertex)
+	// Counter to the usual `err` output, this returns `true` on success as a second return value
+	vvv, ok := o.(Vertex) // this is basically o.typeof(vertex)
 
-	if !err {
+	if !ok {
 		fmt.Println("It's a vertex:", vvv)
 	} else {
 		fmt.Println("Not a vertex")
@@ -132,8 +133,8 @@ func (e FloatErrorWithMessage) Error() string {
 
 func TestError(val float64) (float64, error) {
 	// return 0, errors.New(fmt.Sprintf("bad input: %f", val)) // the built-in way
-	//return 0, SimpleFloatError(val) // simple custom error
-	return 0, FloatErrorWithMessage{val, "Can't work with this!"} // more functional custom error
+	// return 0, SimpleFloatError(val) // simple custom error
+	return 0, FloatErrorWithMessage{val, "Can't work with this!"} // a more functional custom error
 }
 
 // ### DEFINING ERRORS END ###
@@ -200,6 +201,7 @@ func interfaces(v Vertex) {
 
 	s = &v
 
+	// We'll typecast `s` to `error` which implements `Stringer` interface
 	stringer, ok := s.(error)
 	if !ok {
 		fmt.Printf("It can be a string! Value: %v, Type: %T, ok: %v\n", stringer, stringer, ok)
@@ -550,6 +552,8 @@ func main() {
 	// structs()
 
 	// arrays()
+
+	interfaces(Vertex{1, 2})
 
 	// maps()
 
