@@ -210,7 +210,7 @@ func interfaces(v Vertex) {
 	}
 
 	a := []interface{}{"1", "2", "3", 7}
-	a = append([]interface{}{"dump"}, a...)
+	a = append([]interface{}{"dump"}, a...) // expand `a`
 	fmt.Println(a...)
 }
 
@@ -537,6 +537,15 @@ func getFibonacciFunc() func(uint64) uint64 {
 	}
 }
 
+// Uses a reflection to list the methods supported by the class of the given object.
+func listMethods(obj interface{}) {
+	fooType := reflect.TypeOf(obj)
+	for i := 0; i < fooType.NumMethod(); i++ {
+		method := fooType.Method(i)
+		fmt.Println(method.Name)
+	}
+}
+
 func main() {
 
 	p := fmt.Println
@@ -553,7 +562,7 @@ func main() {
 
 	// arrays()
 
-	interfaces(Vertex{1, 2})
+	interfaces(Vertex{1, 3})
 
 	// maps()
 
