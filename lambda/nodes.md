@@ -1,6 +1,7 @@
 ### Build:
 ```
-$ GOOS=linux go build -o main $ zip deployment.zip main
+$ GOOS=linux go build -o main
+$ zip deployment.zip main
 ````
 
 ### Test payload (test event):
