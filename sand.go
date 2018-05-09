@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ro-tex/SandGo/hello"
+	"./hello"
 )
 
 func helloWorld() {
@@ -44,7 +44,7 @@ func packages() {
 
 func pointers() {
 	f := 22 / 7.0
-	var p *float64 = &f
+	var p = &f // *float64
 	fmt.Println(*p)
 
 	*p = 2.26 // dereferencing or indirecting
@@ -58,7 +58,7 @@ func pointers() {
 	v := Vertex{2, 3}
 
 	fmt.Println(v)
-	v.Rotate()
+	v.rotate()
 	fmt.Println(v)
 
 	fmt.Println("Objects:")
@@ -80,6 +80,7 @@ func pointers() {
 	}
 }
 
+// Vertex is a type
 type Vertex struct {
 	X int `json:"a"` // needs to be public in order to be exported, as in "X int"
 	Y int `json:"b"`
@@ -97,7 +98,7 @@ func (v Vertex) String() string {
 	The v that we pass in the method signature defines how we see 'this' in the scope of the method - it's
 	up to us to name it.
 */
-func (v Vertex) Quadrant() int {
+func (v Vertex) quadrant() int {
 	switch {
 	case v.X >= 0 && v.Y >= 0:
 		return 1
@@ -111,17 +112,20 @@ func (v Vertex) Quadrant() int {
 }
 
 // Mutator: This one takes a pointer to an object, so it can modify it.
-func (v *Vertex) Rotate() {
+func (v *Vertex) rotate() {
 	v.X, v.Y = v.Y, v.X
 }
 
 // ### DEFINING ERRORS START ###
+
+// SimpleFloatError is a simple error type. The requirement for comments is annoying.
 type SimpleFloatError float64
 
 func (e SimpleFloatError) Error() string {
 	return fmt.Sprintf("negative input: %f", float64(e))
 }
 
+// FloatErrorWithMessage is just an example error class
 type FloatErrorWithMessage struct {
 	val float64
 	msg string
@@ -131,7 +135,7 @@ func (e FloatErrorWithMessage) Error() string {
 	return fmt.Sprintf("%s value: %f", e.msg, e.val)
 }
 
-func TestError(val float64) (float64, error) {
+func testError(val float64) (float64, error) {
 	// return 0, errors.New(fmt.Sprintf("bad input: %f", val)) // the built-in way
 	// return 0, SimpleFloatError(val) // simple custom error
 	return 0, FloatErrorWithMessage{val, "Can't work with this!"} // a more functional custom error
@@ -144,13 +148,13 @@ func adder(base int) func(int) int {
 	sum := base
 
 	return func(x int) int {
-		sum := sum + x
+		sum = sum + x
 		return sum
 	}
 }
 
 func structs() {
-	var point Vertex = Vertex{3, 4}
+	var point = Vertex{3, 4}
 	fmt.Printf("%T -> %+v\n", point, point) // %+v prints the field names, too!
 
 	p := &point
@@ -234,7 +238,7 @@ func variadic(args ...interface{}) {
 }
 
 func readers() {
-	var stream string = "Hello, this is a stream of data to be read."
+	var stream = "Hello, this is a stream of data to be read."
 	r := strings.NewReader(stream)
 	b := make([]byte, 8) // we'll read into this buffer
 
@@ -254,8 +258,8 @@ func readers() {
 	}
 }
 
-func Pic(dx, dy int) [][]uint8 {
-	var result [][]uint8 = make([][]uint8, dx, dx)
+func pic(dx, dy int) [][]uint8 {
+	var result = make([][]uint8, dx, dx)
 	for i := 0; i < dx; i++ {
 		result[i] = make([]uint8, dy, dy)
 		for j := 0; j < dy; j++ {
@@ -474,12 +478,12 @@ func (t *tree) find(x int) bool {
 	return t.v == x || t.l.find(x) || t.r.find(x)
 }
 
-func EquableTriangle(a, b, c int) bool {
+func equableTriangle(a, b, c int) bool {
 	p := float64(a + b + c)
 	return p == math.Sqrt(p*(p-float64(2*a))*(p-float64(2*b))*(p-float64(2*c)))/4
 }
 
-func Accum(s string) string {
+func accum(s string) string {
 	segments := make([]string, len(s))
 	for i := 0; i < len(s); i++ {
 		segments[i] = strings.ToUpper(string(s[i])) + strings.Repeat(string(s[i]), i)
@@ -487,7 +491,7 @@ func Accum(s string) string {
 	return strings.Join(segments, "-")
 }
 
-func ToNato(words string) string {
+func toNato(words string) string {
 	nato := []string{"Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu"}
 	words = strings.ToUpper(strings.Replace(words, " ", "", -1))
 	out := make([]string, 0, len(words))
