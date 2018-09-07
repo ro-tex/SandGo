@@ -4,7 +4,7 @@
 
 ## Run just the wasm file:
 
-`./go_js_wasm_exec test.wasm`
+`sh go_js_wasm_exec test.wasm`
 
 ## Run the server:
 
