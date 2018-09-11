@@ -16,6 +16,15 @@ import (
 	"./hello"
 )
 
+// see https://stackoverflow.com/questions/24790175/when-is-the-init-function-run
+func init() {
+	// This is guaranteed to be called after all var inits and so on
+	// and before main()
+}
+
+// This will be called before init()
+var summed, _ = factor(4, 5)
+
 func helloWorld() {
 	fmt.Print(">>> ")
 	fmt.Printf("Hello, %s!\n", "世界") // string formatting
