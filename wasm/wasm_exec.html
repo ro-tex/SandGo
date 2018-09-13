@@ -15,7 +15,8 @@ license that can be found in the LICENSE file.
 	<script src="wasm_exec.js"></script>
 	<script>
 		// const go = new Go();
-		// WebAssembly.instantiateStreaming(fetch("test.wasm"), go.importObject).then((result) => {
+		// WebAssembly.instantiateStreaming(fetch("test.wasm"), go.importObject)
+		// .then((result) => {
 		//	go.run(result.instance);
 		// });
 
@@ -31,20 +32,15 @@ license that can be found in the LICENSE file.
 		const go = new Go();
 		let mod, inst;
 		WebAssembly.instantiateStreaming(fetch(binFile), go.importObject)
-			.then((result) => {
+			.then(async (result) => {
 				mod = result.module;
 				inst = result.instance;
 				document.getElementById("runButton").disabled = false;
+				await go.run(inst);
 			});
-
-		async function run() {
-			console.clear();
-			await go.run(inst);
-			inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-		}
 	</script>
 
-	<button onClick="run();" id="runButton" disabled>Run</button>
+	<button onClick="add(4, 5);" id="runButton" disabled>Run</button>
 </body>
 
 </html>

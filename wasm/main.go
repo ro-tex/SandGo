@@ -1,14 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"syscall/js"
 )
 
 // see https://godoc.org/syscall/js
 
 func add(in []js.Value) {
-	js.Global().Set("output", js.ValueOf(in[0].Int()+in[1].Int()))
+
+	// val := js.Global().Get("document").Call("getElementById", "some_id").Get("value").String()
+
+	res := js.ValueOf(in[0].Int() + in[1].Int())
+	// js.Global().Set("output", res)
+	println(res.String())
+
+	// js.Global().Get("document").Call("getElementById", "some_output_id").Set("value", res)
 }
 
 func registerCallbacks() {
@@ -16,10 +22,10 @@ func registerCallbacks() {
 }
 
 func main() {
-	c := make(chan struct{}, 0)
+	done := make(chan struct{}, 0)
 
 	println("Hello, WebAssembly!")
 	registerCallbacks()
 
-	<-c
+	<-done
 }
