@@ -15,12 +15,12 @@ license that can be found in the LICENSE file.
 	<script src="wasm_exec.js"></script>
 	<script>
 		// const go = new Go();
-		// WebAssembly.instantiateStreaming(fetch("test.wasm"), go.importObject)
+		// WebAssembly.instantiateStreaming(fetch("lib.wasm"), go.importObject)
 		// .then((result) => {
 		//	go.run(result.instance);
 		// });
 
-		const binFile = "test.wasm";
+		const binFile = "lib.wasm";
 
 		if (!WebAssembly.instantiateStreaming) { // polyfill
 			WebAssembly.instantiateStreaming = async (resp, importObject) => {
@@ -39,8 +39,18 @@ license that can be found in the LICENSE file.
 				await go.run(inst);
 			});
 	</script>
+	<script type="text/javascript">
+		let result = "not what we're looking for...";
 
-	<button onClick="add(4, 5);" id="runButton" disabled>Run</button>
+		function mutateText(mutatorFunc) {
+			let text = document.getElementById("text");
+			mutatorFunc(text.value);
+			text.value = result; // this is so bad...
+		}
+	</script>
+
+	<textarea id="text" name="text" rows="8" cols="80">asdf</textarea><br />
+	<button onClick="mutateText(capitalise)" id="runButton" disabled>Run</button>
 </body>
 
 </html>

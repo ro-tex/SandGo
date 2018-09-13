@@ -1,24 +1,27 @@
 package main
 
 import (
+	"strings"
 	"syscall/js"
 )
 
-// see https://godoc.org/syscall/js
-
 func add(in []js.Value) {
-
-	// val := js.Global().Get("document").Call("getElementById", "some_id").Get("value").String()
-
 	res := js.ValueOf(in[0].Int() + in[1].Int())
-	// js.Global().Set("output", res)
 	println(res.String())
+}
 
-	// js.Global().Get("document").Call("getElementById", "some_output_id").Set("value", res)
+// TODO:
+// - urlencode/decode
+// - base64 encode/decode
+
+func capitalise(text []js.Value) {
+	println("after", strings.ToUpper(text[0].String()))
+	js.Global().Set("result", js.ValueOf(strings.ToUpper(text[0].String())))
 }
 
 func registerCallbacks() {
 	js.Global().Set("add", js.NewCallback(add))
+	js.Global().Set("capitalise", js.NewCallback(capitalise))
 }
 
 func main() {
