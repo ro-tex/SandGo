@@ -35,4 +35,4 @@ Set the value of a variable:
 `js.Global().Set("output", js.ValueOf(5))`
 
 Set the value of an element:
-`js.Global().Get("document").Call("getElementById", "some_output_id").Set("value", res)`
+`js.Global().Get("document").Call("getElementById", "some_output_id").Set("value", js.ValueOf("some text"))`

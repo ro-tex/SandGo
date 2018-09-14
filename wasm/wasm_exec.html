@@ -35,22 +35,29 @@ license that can be found in the LICENSE file.
 			.then(async (result) => {
 				mod = result.module;
 				inst = result.instance;
-				document.getElementById("runButton").disabled = false;
+				// document.getElementById("runButton").disabled = false;
 				await go.run(inst);
 			});
 	</script>
 	<script type="text/javascript">
-		let result = "not what we're looking for...";
-
 		function mutateText(mutatorFunc) {
 			let text = document.getElementById("text");
-			mutatorFunc(text.value, "text");
-			// text.value = result; // this is so bad...
+			mutatorFunc(text.value, "text"); // bad code
 		}
 	</script>
 
 	<textarea id="text" name="text" rows="8" cols="80"></textarea><br />
-	<button onClick="mutateText(capitalise)" id="runButton" disabled>Run</button>
+	<div>
+		<span style="align: left; width: 50%">
+			<button onClick="mutateText(urlEncode)" id="ueBtn">URL Encode</button>
+			<button onClick="mutateText(urlDecode)" id="udBtn">URL Decode</button>
+		</span>
+		<span style="align: right">
+			<button onClick="mutateText(base64Encode)" id="beBtn">Base64 Encode</button>
+			<button onClick="mutateText(base64Decode)" id="bdBtn">Base64 Decode</button>
+		</span>
+	</div>
+	<!-- <button onClick="mutateText(capitalise)" id="runButton" disabled>Run</button> -->
 </body>
 
 </html>
