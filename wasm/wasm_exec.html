@@ -44,12 +44,12 @@ license that can be found in the LICENSE file.
 
 		function mutateText(mutatorFunc) {
 			let text = document.getElementById("text");
-			mutatorFunc(text.value);
-			text.value = result; // this is so bad...
+			mutatorFunc(text.value, "text");
+			// text.value = result; // this is so bad...
 		}
 	</script>
 
-	<textarea id="text" name="text" rows="8" cols="80">asdf</textarea><br />
+	<textarea id="text" name="text" rows="8" cols="80"></textarea><br />
 	<button onClick="mutateText(capitalise)" id="runButton" disabled>Run</button>
 </body>
 

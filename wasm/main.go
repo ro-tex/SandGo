@@ -5,9 +5,8 @@ import (
 	"syscall/js"
 )
 
-func add(in []js.Value) {
-	res := js.ValueOf(in[0].Int() + in[1].Int())
-	println(res.String())
+func getElementById(id string) js.Value {
+	return js.Global().Get("document").Call("getElementById", id)
 }
 
 // TODO:
@@ -15,12 +14,12 @@ func add(in []js.Value) {
 // - base64 encode/decode
 
 func capitalise(text []js.Value) {
-	println("after", strings.ToUpper(text[0].String()))
-	js.Global().Set("result", js.ValueOf(strings.ToUpper(text[0].String())))
+	result := js.ValueOf(strings.ToUpper(text[0].String()))
+	outputEl := getElementById(text[1].String())
+	outputEl.Set("value", result)
 }
 
 func registerCallbacks() {
-	js.Global().Set("add", js.NewCallback(add))
 	js.Global().Set("capitalise", js.NewCallback(capitalise))
 }
 
