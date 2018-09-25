@@ -1,0 +1,150 @@
+// [START declaration]
+syntax = "proto3";
+package tutorial;
+
+import "google/protobuf/timestamp.proto";
+// [END declaration]
+
+// [START java_declaration]
+option java_package = "com.example.tutorial";
+option java_outer_classname = "AddressBookProtos";
+// [END java_declaration]
+
+// [START csharp_declaration]
+option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
+// [END csharp_declaration]
+
+// TODO:
+// - the handling of links objects is a cop-out, I need to find a proper way of describing that. do we support *any* kind of link name there (as opposed to a list of options)?
+// - handle optional fields (e.g. Link.Method)
+
+// [START messages]
+message Link {
+  enum Method {
+    GET = 0;
+    HEAD = 1;
+    POST = 2;
+    PUT = 3;
+    DELETE = 4;
+    OPTIONS = 5;
+    PATCH = 6;
+  }
+
+  string href = 1;
+  repeated Method methods = 2; // TODO Opional
+  string rel = 3;
+}
+
+message Order {
+  message OrderLinks {
+    Link self = 1;
+  }
+
+  string orderId = 1;
+  OrderLinks links = 2;
+}
+
+message Fulfiller {
+  message FulfillerLinks {
+    Link self = 1;
+  }
+
+  FulfillerLinks links = 1;
+}
+
+message NotificationItem {
+  enum Status {
+    New = 0;
+    Accepted = 1;
+    Rejected = 2;
+    AutomaticallyHandled = 3;
+  }
+
+  message NotificationItemLinks {
+    Link self = 1;
+    Link accept = 2;
+    Link reject = 3;
+  }
+
+  string itemId = 1;
+  Status status = 2;
+  NotificationItemLinks links = 3;
+}
+
+message ChangeRequest {
+  message DeliveryChange {
+    message AddressChange {
+      string country = 1;
+      string postalCode = 2;
+      string stateOrProvince = 3;
+      string city = 4;
+      string company = 5;
+      string firstName = 6;
+      string lastName = 7;
+      string middleName = 8;
+      string phone = 9;
+      string phoneExt = 10;
+      string street1 = 11;
+      string street2 = 12;
+      string email = 13;
+      string doorCode = 14;
+    }
+
+    AddressChange destinationAddress = 1;
+  }
+
+  DeliveryChange deliveryChangeDetails = 1;
+}
+
+message RetryDetails {
+  enum Reason {
+    Unspecified = 0;
+    ReprintRequest = 1;
+  }
+
+  Reason reason = 1;
+  string message = 2; // TODO Optional
+}
+
+message Notification {
+  enum Type {
+    OrderRequest = 0;
+    CancellationRequest = 1;
+    ChangeRequest = 2;
+    Unknown = 3;
+    ProductionStarted = 4;
+    ItemsRejected = 5;
+    Informational = 6;
+    RetryOrderRequest = 7;
+  }
+
+  enum Status {
+    Unknown = 0;
+    New = 1;
+    Sent = 2;
+    Completed = 3;
+    AutomaticallyHandled = 4;
+  }
+
+  message NotificationLinks {
+    Link self = 1;
+    Link accept = 2;
+    Link reject = 3;
+  }
+
+  string notificationId = 1;
+  Type type = 2;
+  Status status = 3;
+  string createdDate = 4; // NOTE maybe a date format?
+  Order order = 5;
+  Fulfiller fulfiller = 6;
+  repeated NotificationItem items = 7;
+  NotificationLinks links = 8;
+  ChangeRequest changeRequest = 9;
+  RetryDetails retryOrderRequest = 10;
+}
+
+message Notifications {
+  repeated Notification notification = 1;
+}
+// [END messages]
