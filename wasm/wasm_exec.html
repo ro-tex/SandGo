@@ -47,16 +47,11 @@ license that can be found in the LICENSE file.
 	</script>
 
 	<textarea id="text" name="text" rows="8" cols="80"></textarea><br />
-	<div>
-		<span style="align: left; width: 50%">
-			<button onClick="mutateText(urlEncode)" id="ueBtn">URL Encode</button>
-			<button onClick="mutateText(urlDecode)" id="udBtn">URL Decode</button>
-		</span>
-		<span style="align: right">
-			<button onClick="mutateText(base64Encode)" id="beBtn">Base64 Encode</button>
-			<button onClick="mutateText(base64Decode)" id="bdBtn">Base64 Decode</button>
-		</span>
-	</div>
+	<button onClick="mutateText(urlEncode)" id="ueBtn">URL Encode</button>
+	<button onClick="mutateText(urlDecode)" id="udBtn">URL Decode</button>
+	<button onClick="mutateText(base64Encode)" id="beBtn">Base64 Encode</button>
+	<button onClick="mutateText(base64Decode)" id="bdBtn">Base64 Decode</button>
+
 	<!-- <button onClick="mutateText(capitalise)" id="runButton" disabled>Run</button> -->
 </body>
 
