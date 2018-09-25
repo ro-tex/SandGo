@@ -1,8 +1,6 @@
 // [START declaration]
 syntax = "proto3";
 package tutorial;
-
-import "google/protobuf/timestamp.proto";
 // [END declaration]
 
 // [START java_declaration]
@@ -16,11 +14,11 @@ option csharp_namespace = "Google.Protobuf.Examples.AddressBook";
 
 // TODO:
 // - the handling of links objects is a cop-out, I need to find a proper way of describing that. do we support *any* kind of link name there (as opposed to a list of options)?
-// - handle optional fields (e.g. Link.Method)
+// - handle optional fields (e.g. Link.Method) <- these get a default "prototype" value (0, false, empty string)
 
 // [START messages]
 message Link {
-  enum Method {
+  enum LinkMethod {
     GET = 0;
     HEAD = 1;
     POST = 2;
@@ -31,7 +29,7 @@ message Link {
   }
 
   string href = 1;
-  repeated Method methods = 2; // TODO Opional
+  repeated LinkMethod methods = 2;
   string rel = 3;
 }
 
@@ -53,7 +51,7 @@ message Fulfiller {
 }
 
 message NotificationItem {
-  enum Status {
+  enum NotificationItemStatus {
     New = 0;
     Accepted = 1;
     Rejected = 2;
@@ -67,7 +65,7 @@ message NotificationItem {
   }
 
   string itemId = 1;
-  Status status = 2;
+  NotificationItemStatus status = 2;
   NotificationItemLinks links = 3;
 }
 
@@ -103,11 +101,19 @@ message RetryDetails {
   }
 
   Reason reason = 1;
-  string message = 2; // TODO Optional
+  string message = 2;
+}
+
+enum NotificationStatus {
+  Unknown = 0;
+  New = 1;
+  Sent = 2;
+  Completed = 3;
+  AutomaticallyHandled = 4;
 }
 
 message Notification {
-  enum Type {
+  enum NotificationType {
     OrderRequest = 0;
     CancellationRequest = 1;
     ChangeRequest = 2;
@@ -118,14 +124,6 @@ message Notification {
     RetryOrderRequest = 7;
   }
 
-  enum Status {
-    Unknown = 0;
-    New = 1;
-    Sent = 2;
-    Completed = 3;
-    AutomaticallyHandled = 4;
-  }
-
   message NotificationLinks {
     Link self = 1;
     Link accept = 2;
@@ -133,8 +131,8 @@ message Notification {
   }
 
   string notificationId = 1;
-  Type type = 2;
-  Status status = 3;
+  NotificationType type = 2;
+  NotificationStatus status = 3;
   string createdDate = 4; // NOTE maybe a date format?
   Order order = 5;
   Fulfiller fulfiller = 6;
