@@ -1,6 +1,6 @@
 // [START declaration]
 syntax = "proto3";
-package notifications;
+package pb;
 // [END declaration]
 
 // [START java_declaration]
