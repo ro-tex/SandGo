@@ -53,8 +53,7 @@ func main() {
 	fmt.Println(pb.NotificationStatus_name[1])
 
 	// notifs := readNotifsPB("../notifications.pb")
-	// notifs := readNotifsJSON("../notifications.json")
-	//
-	// fmt.Println(notifs)
+	notifs := readNotifsJSON("../notifications.json")
 
+	fmt.Println(notifs.Notifications[0].NotificationID)
 }

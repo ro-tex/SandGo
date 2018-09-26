@@ -1,9 +1,5 @@
 package notif
 
-func Hi() {
-	println("hello")
-}
-
 type LinkMethod string
 
 type Link struct {
@@ -96,4 +92,6 @@ type Notification struct {
 	RetryOrderRequest RetryDetails       `json:"retryOrderRequest"`
 }
 
-type Notifications []Notification
+type Notifications struct {
+	Notifications []Notification `json:"notifications"`
+}
