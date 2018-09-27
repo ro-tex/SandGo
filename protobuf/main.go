@@ -10,19 +10,7 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
-/*
-https://developers.google.com/protocol-buffers/docs/gotutorial
-
-https://godoc.org/github.com/golang/protobuf/proto
-
-The complete guide to writing .proto files:
-https://developers.google.com/protocol-buffers/docs/proto3
-
-https://developers.google.com/protocol-buffers/docs/reference/go-generated
-https://developers.google.com/protocol-buffers/docs/encoding
-*/
-
-func readJSONNotifs(filename string) *pb.Notifications {
+func readNotifsFromJSON(filename string) *pb.Notifications {
 	in, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
@@ -34,32 +22,43 @@ func readJSONNotifs(filename string) *pb.Notifications {
 	return notifs
 }
 
-func readJSONNotif(filename string) *pb.Notification {
+func readNotifsFromPB(filename string) *pb.Notifications {
 	in, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
 	}
-	notif := &pb.Notification{}
-	if err := json.Unmarshal([]byte(in), &notif); err != nil {
+	notifs := &pb.Notifications{}
+	if err := proto.Unmarshal(in, notifs); err != nil {
 		log.Fatalln("Failed to parse notifications:", err)
 	}
-	return notif
+	return notifs
+}
+
+func writeNotifsToJSON(filename string, notifs *pb.Notifications) {
+	j, err := json.Marshal(notifs)
+	if err != nil {
+		fmt.Println("Err:", err)
+	}
+	err = ioutil.WriteFile(filename, []byte(string(j)), 0644)
+	if err != nil {
+		log.Fatalln("Error writing file:", err)
+	}
+}
+
+func writeNotifsToPB(filename string, notifs *pb.Notifications) {
+	pb, err := proto.Marshal(notifs)
+	if err != nil {
+		fmt.Println("Failed to encode notifications:", err)
+	}
+	err = ioutil.WriteFile(filename, pb, 0644)
+	if err != nil {
+		log.Fatalln("Error writing file:", err)
+	}
 }
 
 func main() {
-	// notifs := readNotifs("../notifications.pb")
-	notif := readJSONNotif("../notif.json")
-	notifs := readJSONNotifs("../notifications.json")
-	fmt.Println(">>> Single:")
-	fmt.Println(notif.Items)
-	fmt.Println("<<<")
-	fmt.Println(">>> Many:")
-	fmt.Println(notifs.Notifications)
-	fmt.Println("<<<")
+	// notifs := readNotifsFromPB("notifications.pb")
+	notifs := readNotifsFromJSON("notifications.json")
 
-	// j, err := json.Marshal(notif)
-	// if err != nil {
-	// 	fmt.Println("Err:", err)
-	// }
-	// fmt.Println(string(j))
+	writeNotifsToPB("notifications.pb", notifs)
 }
