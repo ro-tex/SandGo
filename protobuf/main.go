@@ -6,9 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"./notif"
 	"./pb"
-	"github.com/golang/protobuf/proto"
 )
 
 /*
@@ -23,37 +21,41 @@ https://developers.google.com/protocol-buffers/docs/reference/go-generated
 https://developers.google.com/protocol-buffers/docs/encoding
 */
 
-func readNotifsPB(filename string) *pb.Notifications {
-	// Read the existing address book.
+func readJSONNotifs(filename string) *pb.Notifications {
 	in, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
 	}
 	notifs := &pb.Notifications{}
-	if err := proto.Unmarshal(in, notifs); err != nil {
-		log.Fatalln("Failed to parse notifications:", err)
-	}
-	return notifs
-}
-
-func readNotifsJSON(filename string) *notif.Notifications {
-	// Read the existing address book.
-	in, err := ioutil.ReadFile(filename)
-	if err != nil {
-		log.Fatalln("Error reading file:", err)
-	}
-	notifs := &notif.Notifications{}
 	if err := json.Unmarshal([]byte(in), &notifs); err != nil {
 		log.Fatalln("Failed to parse notifications:", err)
 	}
 	return notifs
 }
 
+func readJSONNotif(filename string) *pb.Notification {
+	in, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatalln("Error reading file:", err)
+	}
+	notif := &pb.Notification{}
+	if err := json.Unmarshal([]byte(in), &notif); err != nil {
+		log.Fatalln("Failed to parse notifications:", err)
+	}
+	return notif
+}
+
 func main() {
-	fmt.Println(pb.NotificationStatus_name[1])
+	// notifs := readNotifs("../notifications.pb")
+	notif := readJSONNotif("../notif.json")
+	// notifs := readJSONNotifs("../notifications.json")
+	fmt.Println(">>>")
+	fmt.Println(notif)
+	fmt.Println("<<<")
 
-	// notifs := readNotifsPB("../notifications.pb")
-	notifs := readNotifsJSON("../notifications.json")
-
-	fmt.Println(notifs.Notifications[0].NotificationID)
+	// j, err := json.Marshal(notif)
+	// if err != nil {
+	// 	fmt.Println("Err:", err)
+	// }
+	// fmt.Println(string(j))
 }
