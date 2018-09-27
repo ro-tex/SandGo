@@ -104,7 +104,7 @@ message Notification {
 message Notifications {
   message NotificationLinks {}
 
-  repeated Notification notification = 1;
+  repeated Notification notifications = 1;
   int32 count = 2;
   NotificationLinks links = 3;
 }

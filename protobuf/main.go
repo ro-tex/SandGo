@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"./pb"
+	"github.com/golang/protobuf/proto"
 )
 
 /*
@@ -48,9 +49,12 @@ func readJSONNotif(filename string) *pb.Notification {
 func main() {
 	// notifs := readNotifs("../notifications.pb")
 	notif := readJSONNotif("../notif.json")
-	// notifs := readJSONNotifs("../notifications.json")
-	fmt.Println(">>>")
-	fmt.Println(notif)
+	notifs := readJSONNotifs("../notifications.json")
+	fmt.Println(">>> Single:")
+	fmt.Println(notif.Items)
+	fmt.Println("<<<")
+	fmt.Println(">>> Many:")
+	fmt.Println(notifs.Notifications)
 	fmt.Println("<<<")
 
 	// j, err := json.Marshal(notif)
