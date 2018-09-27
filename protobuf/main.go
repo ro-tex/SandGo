@@ -50,7 +50,9 @@ func readNotifsFromPB(filename string) (*pb.Notifications, time.Duration) {
 func writeNotifsToJSON(filename string, notifs *pb.Notifications) time.Duration {
 	start := time.Now()
 
-	j, err := json.Marshal(notifs)
+	// I'm using MarshalIndent instead of Marshal here because that better reflects the everyday use case.
+	// This *does* affect the JSON's size -> it explodes from 14MB to 22MB in my example.
+	j, err := json.MarshalIndent(notifs, "", "  ")
 	if err != nil {
 		fmt.Println("Err:", err)
 	}
@@ -94,10 +96,10 @@ func main() {
 	}
 
 	var i int64
-	for i = 0; i < 1; i++ {
-		notifsPB, runtime = readNotifsFromPB("notifications.pb")
+	for i = 0; i < 100; i++ {
+		notifsPB, runtime = readNotifsFromPB("out.pb")
 		durations.readPB += runtime
-		notifsJSON, runtime = readNotifsFromJSON("notifications.json")
+		notifsJSON, runtime = readNotifsFromJSON("out.json")
 		durations.readJSON += runtime
 
 		runtime = writeNotifsToPB("out.pb", notifsPB)
@@ -105,6 +107,11 @@ func main() {
 		runtime = writeNotifsToJSON("out.json", notifsJSON)
 		durations.writeJSON += runtime
 	}
+
+	// readJSON		445.677192 ms
+	// readPB			 59.701868 ms
+	// writeJSON	371.340576 ms
+	// writePB		 62.022134 ms
 
 	prt("readJSON\t", durations.readJSON, i)
 	prt("readPB\t\t", durations.readPB, i)
