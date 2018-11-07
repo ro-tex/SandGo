@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-func is_sorted(sl []int) bool {
+func isSorted(sl []int) bool {
 	if len(sl) <= 1 {
 		return true
 	}
@@ -17,7 +17,7 @@ func is_sorted(sl []int) bool {
 	return true
 }
 
-func get_perm(sl []int) []int {
+func getPerm(sl []int) []int {
 	var out = make([]int, len(sl))
 	var indices = rand.Perm(len(sl))
 	for k, i := range indices {
@@ -26,15 +26,16 @@ func get_perm(sl []int) []int {
 	return out
 }
 
-func bogosort(arr []int) []int {
-	var out = get_perm(arr)
-	for !is_sorted(out) {
-		out = get_perm(arr)
+// Bogosort sorts a slice by generating random permutations until one of them happens to be sorted.
+func Bogosort(arr []int) []int {
+	var out = getPerm(arr)
+	for !isSorted(out) {
+		out = getPerm(arr)
 	}
 	return out
 }
 
 func main() {
 	arr := []int{5, 0, 3, 4, 1}
-	fmt.Println(bogosort(arr))
+	fmt.Println(Bogosort(arr))
 }
