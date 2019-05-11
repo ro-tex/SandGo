@@ -1,13 +1,13 @@
 
 ## Build a static binary
-`CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -s' -o deployable .`    
+`CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w' -o deployable .`    
 Binary size: 5.6MB  
 
 Build flags:  
 `-a` Force rebuild  
 `-o` Custom output name  
 
-Linking flag:  
+Linking flags:  
 `-w` Omit the DWARF symbol table.  
 `-s` Omit the symbol table and debug information.    
 
