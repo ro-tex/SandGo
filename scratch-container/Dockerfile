@@ -1,3 +1,3 @@
 FROM scratch
-COPY deployable /
-CMD ["/deployable"]
+COPY ["deployable", "/"]
+ENTRYPOINT ["/deployable"]

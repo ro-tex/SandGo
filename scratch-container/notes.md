@@ -1,7 +1,7 @@
 
 ## Build a static binary
 `CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w' -o deployable .`    
-Binary size: 5.6MB  
+Binary size: 5.6MB
 
 Build flags:  
 `-a` Force rebuild  
@@ -15,8 +15,12 @@ Linking flags:
 `docker build -t inovakov/scratchy .`  
 Container image size: 5.8MB
 
-## Run the container (expose at port 80)
+## Run the container (expose container port 3000 at local port 80)
 `docker run -p 80:3000 --name scratchy inovakov/scratchy`
+
+If the executable in the container supports different execution modes/flags, you can change the default like this:  
+`docker run -p 80:3000 --name scratchy inovakov/scratchy -v`  
+In this situation the trailing params are being added to the `ENTRYPOINT` executable.
 
 ## Sources
 ### Articles
@@ -27,4 +31,5 @@ Container image size: 5.8MB
 
 ### Docker docs
 [FROM scratch](https://hub.docker.com/_/scratch/) - the image we're using + a super simple example  
-[Use multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) - what *are* those multi-stage builds, anyway?
+[Use multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) - what *are* those multi-stage builds, anyway?  
+[Docker RUN vs CMD vs ENTRYPOINT](http://goinbigdata.com/docker-run-vs-cmd-vs-entrypoint/)  
