@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -13,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"./hello"
+	"github.com/ro-tex/SandGo/hello"
 )
 
 // see https://stackoverflow.com/questions/24790175/when-is-the-init-function-run
@@ -559,6 +560,24 @@ func listMethods(obj interface{}) {
 	}
 }
 
+// we use a named return, so we don't need to declare the err var before we write the deferread handler
+func handleErrorsInDefer() (err error) {
+	defer func() {
+		if err != nil {
+			println("Deferred error handling:", err.Error())
+		}
+	}()
+
+	// call a function that might result in an error:
+	err = func() error { return errors.New("this is an error") }()
+	if err != nil {
+		return
+	}
+
+	// more code...
+	return
+}
+
 func main() {
 
 	p := fmt.Println
@@ -603,6 +622,8 @@ func main() {
 
 	// f := getFibonacciFunc()
 	// p(f(3), f(5), f(9))
+
+	handleErrorsInDefer()
 
 	p()
 }
