@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+Copyright 2018 The Go Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Go wasm</title>
+</head>
+
+<body>
+	<script src="wasm_exec.js"></script>
+	<script>
+		// const go = new Go();
+		// WebAssembly.instantiateStreaming(fetch("lib.wasm"), go.importObject)
+		// .then((result) => {
+		//	go.run(result.instance);
+		// });
+
+		const binFile = "lib.wasm";
+
+		if (!WebAssembly.instantiateStreaming) { // polyfill
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
+
+		const go = new Go();
+		let mod, inst;
+		WebAssembly.instantiateStreaming(fetch(binFile), go.importObject)
+			.then(async (result) => {
+				mod = result.module;
+				inst = result.instance;
+				// document.getElementById("runButton").disabled = false;
+				await go.run(inst);
+			});
+	</script>
+	<script type="text/javascript">
+		function mutateText(mutatorFunc) {
+			let text = document.getElementById("text");
+			mutatorFunc(text.value, "text"); // bad code
+		}
+	</script>
+
+	<textarea id="text" name="text" rows="8" cols="80"></textarea><br />
+	<button onClick="mutateText(urlEncode)" id="ueBtn">URL Encode</button>
+	<button onClick="mutateText(urlDecode)" id="udBtn">URL Decode</button>
+	<button onClick="mutateText(base64Encode)" id="beBtn">Base64 Encode</button>
+	<button onClick="mutateText(base64Decode)" id="bdBtn">Base64 Decode</button>
+
+	<!-- <button onClick="mutateText(capitalise)" id="runButton" disabled>Run</button> -->
+</body>
+
+</html>

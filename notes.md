@@ -26,11 +26,17 @@ aws lambda update-function-code \
   --no-dry-run
 ```
 
-## Further compress the binary:
+## Reducing the size of the binary:
 
-```
-upx --brute main
-```
+See "[Shrink Your Go Binaries With This One Weird Trick](https://blog.filippo.io/shrink-your-go-binaries-with-this-one-weird-trick/)".
+
+Strip all debugging information:
+
+`$ go build -ldflags="-s -w" -o main`
+
+Compress the binary (it will auto-decompress on run):
+
+`$ upx --brute main`
 
 Be advised that compressing a binary in this way:
 
