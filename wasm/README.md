@@ -2,6 +2,9 @@
 
 `GOARCH=wasm GOOS=js go build -o lib.wasm main.go`
 
+Alternatively, you can build with tinygo:  
+`tinygo build -o out/main.wasm -target wasm ./go/main.go`
+
 ## Run just the wasm file:
 
 `sh go_js_wasm_exec lib.wasm`
