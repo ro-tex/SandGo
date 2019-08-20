@@ -89,19 +89,11 @@ write Protobuf      62 ms  (~6x faster)
 
 Data Size:
 ```
-JSON:     22MB
+JSON:     22MB (14MB when compacted)
 Protobuf: 11MB
 
-Compressed JSON:      889KB
-Compressed Protobuf:  822KB
-```
-
-### notes
-JSON was 14MB stripped  
-Compression time:  
-```
-JSON:       0.23s  
-Protobuf:   0.18s  
+Compressed JSON:      889KB (0.23s to compress)
+Compressed Protobuf:  822KB (0.18s to compress)
 ```
 
 ## Links:
