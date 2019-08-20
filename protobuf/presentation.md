@@ -26,19 +26,19 @@ message Link {
 ```
 
 ### notes
- - you need to compile your model into a library for encoding/decoding
- - keys are replaced by numeric ids (1 byte, 2 bytes)
- - simple DSL (very similar to JSON) -> message descriptors
- - msg descriptors can be reused across langs, platforms, etc.
- - supports messages, enums, default values, maps, etc.
- - fields are strongly typed
- - data is validated
- - extensible - newer versions of the model can read older data
+ - you need to compile your model into a library for encoding/decoding  
+ - keys are replaced by numeric ids (1 byte, 2 bytes)  
+ - simple DSL (very similar to JSON) -> message descriptors  
+ - msg descriptors can be reused across langs, platforms, etc.  
+ - supports messages, enums, default values, maps, etc.  
+ - fields are strongly typed  
+ - data is validated  
+ - extensible - newer versions of the model can read older data  
 
 ## Use
- - communication between frontend and backend
- - communication between services
- - data at rest
+ - communication between frontend and backend  
+ - communication between services  
+ - data at rest  
 
 ## Code
 
@@ -58,33 +58,33 @@ Get JSON from file:
 ```
 
 ### notes
- - not so good for public APIs (need to provide library, increases complexity for clients)
- - better suited for larger payloads but also works well with smaller ones
+ - not so good for public APIs (need to provide library, increases complexity for clients)  
+ - better suited for larger payloads but also works well with smaller ones  
 
 ## Pros & Cons
 ### Pros
- - smaller and faster than JSON
- - structure validation (when used for RPC)
+ - smaller and faster than JSON  
+ - structure validation (when used for RPC)  
 
 ### Cons
- - needs some setup
- - not human-readable
+ - needs some setup  
+ - not human-readable  
 
 ### notes
- - you can't directly play around with it and experiment
- - network transfer times, compression times
+ - you can't directly play around with it and experiment  
+ - network transfer times, compression times  
 
 ## Comparison to JSON
 
- - 10,000 order notifications
+ - 10,000 order notifications  
 
 Speed:
 ```
-readJ SON  		445.677192 ms
-write JSON	     371.340576 ms
+read JSON          446 ms
+write JSON         371 ms
 
-read Protobuf       59.701868 ms  (~7.5x faster)
-write Protobuf      62.022134 ms  (~6x faster)
+read Protobuf       60 ms  (~7.5x faster)
+write Protobuf      62 ms  (~6x faster)
 ```
 
 Data Size:
@@ -97,10 +97,12 @@ Compressed Protobuf:  822KB
 ```
 
 ### notes
-JSON was 14MB stripped
-Compression time:
-JSON:       0.23s
-Protobuf:   0.18s
+JSON was 14MB stripped  
+Compression time:  
+```
+JSON:       0.23s  
+Protobuf:   0.18s  
+```
 
 ## Links:
   - https://developers.google.com/protocol-buffers/
