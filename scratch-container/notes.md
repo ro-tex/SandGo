@@ -22,6 +22,14 @@ If the executable in the container supports different execution modes/flags, you
 `docker run -p 80:3000 --name scratchy inovakov/scratchy -v`  
 In this situation the trailing params are being added to the `ENTRYPOINT` executable.
 
+## Run this container in Kubernetes with minikube
+`kubectl run scratchy --image=inovakov/scratchy --port=3000` the port needs to be the one exposed by the app  
+`kubectl expose deployment scratchy --type=NodePort`  
+`kubectl get pod` see some info about the pod  
+`minikube service scratchy --url` get the URL where you can call the service  
+`kubectl delete services scratchy`  
+`kubectl delete deployment scratchy`  
+
 ## Sources
 ### Articles
 [Building Docker Images for Static Go Binaries](https://medium.com/@kelseyhightower/optimizing-docker-images-for-static-binaries-b5696e26eb07) - quite minimal, covers SSL as well  
