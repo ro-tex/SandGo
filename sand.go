@@ -579,11 +579,11 @@ func handleErrorsInDefer() (err error) {
 	return
 }
 
-func goRoutines() {
+func goRoutinesWaitGroup() {
 	var wg sync.WaitGroup
 
-	counter := func() {
-		for i := 0; i < 10; i++ {
+	count := func() {
+		for i := 0; i < 5; i++ {
 			fmt.Println(i)
 			time.Sleep(500 * time.Millisecond)
 		}
@@ -591,10 +591,40 @@ func goRoutines() {
 	}
 
 	wg.Add(1)
-	go counter()
+	go count()
 
 	wg.Wait()
-	fmt.Println("goRoutines is done")
+	fmt.Println("goRoutinesWaitGroup is done")
+}
+
+func goRoutinesChannels() {
+	ch := make(chan int)
+
+	count := func() {
+		for i := 0; i < 5; i++ {
+			ch <- i
+			time.Sleep(500 * time.Millisecond)
+		}
+		close(ch)
+	}
+
+	go count()
+
+	//// option one: read from the channel until it gets closed
+	//for {
+	//	msg, ok := <- ch
+	//	if !ok {
+	//		break
+	//	}
+	//	fmt.Println(msg)
+	//}
+
+	// option 2: range over the channel
+	for msg := range ch {
+		fmt.Println(msg)
+	}
+
+	fmt.Println("goRoutinesChannels is done")
 }
 
 func main() {
@@ -613,7 +643,7 @@ func main() {
 
 	// arrays()
 
-	interfaces(Vertex{1, 3})
+	//interfaces(Vertex{1, 3})
 
 	// maps()
 
@@ -644,7 +674,9 @@ func main() {
 
 	//handleErrorsInDefer()
 
-	goRoutines()
+	//goRoutinesWaitGroup()
+
+	//goRoutinesChannels()
 
 	p()
 }
