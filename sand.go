@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/ro-tex/SandGo/hello"
@@ -578,6 +579,24 @@ func handleErrorsInDefer() (err error) {
 	return
 }
 
+func goRoutines() {
+	var wg sync.WaitGroup
+
+	counter := func() {
+		for i := 0; i < 10; i++ {
+			fmt.Println(i)
+			time.Sleep(500 * time.Millisecond)
+		}
+		wg.Done()
+	}
+
+	wg.Add(1)
+	go counter()
+
+	wg.Wait()
+	fmt.Println("goRoutines is done")
+}
+
 func main() {
 
 	p := fmt.Println
@@ -623,7 +642,9 @@ func main() {
 	// f := getFibonacciFunc()
 	// p(f(3), f(5), f(9))
 
-	handleErrorsInDefer()
+	//handleErrorsInDefer()
+
+	goRoutines()
 
 	p()
 }
