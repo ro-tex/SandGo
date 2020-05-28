@@ -174,7 +174,6 @@ func structs() {
 }
 
 func arrays() {
-
 	primes := [10]int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29}
 	firstFive := primes[0:5] // a named slice - a pointer to a region
 
@@ -209,6 +208,29 @@ func arrays() {
 		{5, true},
 	}
 	fmt.Println(s)
+
+	// advanced slices:
+	a := []int{1, 2, 3}
+	b := a[:0] // a and b share the underlying array
+	b = append(b, 5)
+	b = append(b, 6)
+	fmt.Println(a, b)
+
+	// Adding a second parameter to the slicing operator defines the capacity of the original array to be shared.
+
+	a = []int{1, 2, 3}
+	b = a[:0:0] // a and b do NOT share the underlying array
+	b = append(b, 5)
+	b = append(b, 6)
+	fmt.Println(a, b)
+
+	b = append(a[:0:0], a...) // clone of a into b
+
+	a = []int{1, 2, 3}
+	b = a[:0:1] // a and b share only the first element of the underlying array
+	b = append(b, 5)
+	b = append(b, 6)
+	fmt.Println(a, b)
 }
 
 func interfaces(v Vertex) {
