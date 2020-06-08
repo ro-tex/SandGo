@@ -1,6 +1,6 @@
 ldflags=-s -w
 
-default: fmt build
+default: fmt lint build
 
 fmt:
 	gofmt -s -l -w .
